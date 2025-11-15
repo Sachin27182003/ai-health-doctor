@@ -199,8 +199,9 @@ export default function ChatSettingSideBar({
 
         if (models.length > 0) {
           // pick a safe index (prefer index 0, or 3 if available)
-          const chooseIndex = Math.min(3, models.length - 1);
+          const chooseIndex = Math.min(7, models.length - 1);
           const chosen = models[chooseIndex];
+          console.log("chhosen model", chosen);
           setSelectedLLMProviderModel(chosen);
 
           // Only call onChangeChatRoom if chosen id differs from server state

@@ -92,7 +92,7 @@ export async function onboardingSubmit(data: OnboardingSubmitRequest) {
                 authorId: userId,
                 assistantModeId: mode.id,
                 llmProviderId: llmProvider.id,
-                llmProviderModelId: 'gemini-2.5-flash'
+                llmProviderModelId: 'gemini-2.5-pro'
             }))
         });
     });
