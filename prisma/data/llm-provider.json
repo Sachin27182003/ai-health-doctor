@@ -1,0 +1,11 @@
+[
+  {
+    "providerId": "google",
+    "name": "Google",
+    "apiKey": "AIzaSyAET_t1JBBUVh4IA-8yhC0jdyn9MfJJi2Q",
+    "apiURL": "https://generativelanguage.googleapis.com/v1beta",
+    "order": 2
+  }
+]
+
+
