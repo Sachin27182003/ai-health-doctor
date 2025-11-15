@@ -574,7 +574,6 @@ const HealthDataPreview = ({
             )
           : [];
 
-        // focused words 에 좌표 정보가 없는게 있으면 가장 마지막 인덱스로 보내기
         if (aFocusedWords.length === 0) return 1;
         if (bFocusedWords.length === 0) return -1;
 
@@ -583,7 +582,12 @@ const HealthDataPreview = ({
           bFocusedWords[0].boundingBox
         );
       });
-  }, [getFocusedWords, page, currentPageTestResults, healthData, dataPerPage]);
+  }, [
+    getFocusedWords,
+    page,
+    currentPageTestResults,
+    userBloodTestResults?.test_result,
+  ]);
 
   const getFields = (): Field[] => {
     switch (healthData.type) {
@@ -714,6 +718,8 @@ const HealthDataPreview = ({
     userBloodTestResults?.test_result,
     allInputsBlurred,
     page,
+    currentPageTestResults,
+    userBloodTestResultsPage,
   ]);
 
   useEffect(() => {

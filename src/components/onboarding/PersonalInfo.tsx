@@ -40,7 +40,7 @@ export default function PersonalInfo({
     if (!value.country) {
       onChange({ ...value, country: "India" });
     }
-  }, [value.country, onChange]);
+  }, [value, onChange]);
 
   const isFieldInvalid = (field: keyof PersonalInfoData) => {
     return touchedFields[field] && !value[field];

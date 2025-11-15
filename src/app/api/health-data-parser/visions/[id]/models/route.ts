@@ -11,15 +11,12 @@ export async function GET(
     {params}: { params: Promise<{ id: string }> }
 ) {
     const {id} = await params
-    const searchParams = req.nextUrl.searchParams
     const parser = visions.find(v => v.name === id)
     if (!parser) return NextResponse.json({error: 'Not found'}, {status: 404})
 
     let models: VisionParserModel[]
     try {
-        models = await parser.models({
-            apiUrl: searchParams.get('apiUrl') || undefined,
-        });
+        models = await parser.models();
     } catch (e) {
         console.error(e)
         models = []

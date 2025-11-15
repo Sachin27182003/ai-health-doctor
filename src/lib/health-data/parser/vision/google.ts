@@ -166,10 +166,15 @@ export class GoogleVisionParser extends BaseVisionParser {
     }
 
     // Handle union types
+    // Make sure 'z' and 'T' are correctly defined in your scope
+    // (e.g., import { z, ZodTypeAny } from "zod";)
+
     if (schema instanceof z.ZodUnion) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // We've fixed the 'any' type, so the eslint-disable is no longer needed.
       return z.union(
-        schema.options.map((option: any) => this.removeNullable(option))
+        schema.options.map((option: z.ZodTypeAny) =>
+          this.removeNullable(option)
+        )
       ) as z.ZodType<z.infer<T>>;
     }
 
