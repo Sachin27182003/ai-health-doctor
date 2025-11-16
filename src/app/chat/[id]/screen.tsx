@@ -53,12 +53,24 @@ export default function Screen(
         // Clear input
         setInputText('');
 
-        const oldMessages = [...messages, {
+        // Add user message and an assistant placeholder message so the UI shows "Thinking..."
+        const userMessage = {
             id: new Date().toISOString(),
             content: inputText,
             role: 'USER' as ChatRole,
             createdAt: new Date(),
-        }];
+        };
+
+        const placeholderId = `assistant-temp-${Date.now()}`;
+        const assistantPlaceholder = {
+            id: placeholderId,
+            content: 'Thinking...',
+            role: 'ASSISTANT' as ChatRole,
+            createdAt: new Date(),
+        };
+
+        const oldMessages = [...messages, userMessage, assistantPlaceholder];
+        // show immediately
         await mutate({chatMessages: oldMessages}, {revalidate: false});
 
         const response = await fetch(`/api/chat-rooms/${id}/messages`, {
@@ -76,6 +88,8 @@ export default function Screen(
         const createdAt = new Date()
         if (reader) {
             let done = false;
+            // accumulate assistant content and replace the placeholder message progressively
+            let messageContent = '';
             while (!done) {
                 const {value, done: isDone} = await reader.read();
                 done = isDone;
@@ -87,15 +101,21 @@ export default function Screen(
                         continue;
                     }
                     if (content) {
-                        await mutate({
-                            chatMessages: [
-                                ...oldMessages,
-                                {id: new Date().toISOString(), content: content, role: 'ASSISTANT', createdAt}
-                            ]
-                        }, {revalidate: false});
+                        // append delta to accumulated content
+                        messageContent += content;
+
+                        // replace the assistant placeholder with current accumulated content
+                        const updated = [
+                            ...messages,
+                            userMessage,
+                            { id: placeholderId, content: messageContent, role: 'ASSISTANT' as ChatRole, createdAt }
+                        ];
+
+                        await mutate({ chatMessages: updated }, { revalidate: false });
                     }
                 }
             }
+            // final revalidation to sync with server
             await mutate();
         }
     };
