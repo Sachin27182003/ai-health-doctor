@@ -98,8 +98,8 @@
     "selectPlaceholder": "Select..."
   },
   "LoginPage": {
-    "username": "Username",
-    "usernamePlaceholder": "Enter your username",
+    "username": "Email",
+    "usernamePlaceholder": "Enter your Email",
     "password": "Password",
     "passwordPlaceholder": "••••••••",
     "signIn": "Sign In",

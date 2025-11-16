@@ -101,7 +101,7 @@ export default function LoginScreen() {
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         <div className="rounded-md shadow-sm space-y-4">
                             <div>
-                                <label htmlFor="username" className="block text-sm font-medium text-zinc-300">
+                                <label htmlFor="" className="block text-sm font-medium text-zinc-300">
                                     {t('username')}
                                 </label>
                                 <input
