@@ -73,6 +73,31 @@ export default function Screen(
         // show immediately
         await mutate({chatMessages: oldMessages}, {revalidate: false});
 
+        // Function to update the thinking stage message
+        const updateThinkingStage = async (stage: string) => {
+            await mutate({
+                chatMessages: [
+                    ...messages,
+                    userMessage,
+                    { id: placeholderId, content: stage, role: 'ASSISTANT' as ChatRole, createdAt: new Date() }
+                ]
+            }, { revalidate: false });
+        };
+
+        // Start the thinking stage sequence
+        // Extract first few words from input for the reflecting stage
+        const inputWords = inputText.trim().split(/\s+/).slice(0, 3).join(' ');
+        const thinkingStages = ['Thinking...', `Reflecting on the ${inputWords}...`, 'Considering the flow...'];
+        let stageIndex = 0;
+        const stageInterval = setInterval(async () => {
+            if (stageIndex < thinkingStages.length) {
+                await updateThinkingStage(thinkingStages[stageIndex]);
+                stageIndex++;
+            } else {
+                clearInterval(stageInterval);
+            }
+        }, 2000); // Update every 2 seconds
+
         const response = await fetch(`/api/chat-rooms/${id}/messages`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -101,6 +126,11 @@ export default function Screen(
                         continue;
                     }
                     if (content) {
+                        // Clear the thinking stage interval when LLM starts responding
+                        if (messageContent === '') {
+                            clearInterval(stageInterval);
+                        }
+
                         // append delta to accumulated content
                         messageContent += content;
 
@@ -115,6 +145,8 @@ export default function Screen(
                     }
                 }
             }
+            // Clean up the interval when done
+            clearInterval(stageInterval);
             // final revalidation to sync with server
             await mutate();
         }
@@ -155,7 +187,25 @@ export default function Screen(
                 <div className="flex-1 flex flex-col bg-white min-w-0">
                     <div className="flex-1 overflow-y-auto p-2 space-y-2">
                         {messages.map((message, index) => (
-                            <ChatMessage key={index} message={message}/>
+                            <div key={message.id ?? index}>
+                                {message.role === 'ASSISTANT' && (message.content === 'Thinking...' || message.content === 'Reflecting on the topic...' || message.content === 'Considering the flow...') ? (
+                                    <div className="flex gap-2 bg-gray-50 p-2 rounded">
+                                        <div className="shrink-0 mt-1">
+                                            <div className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-200">
+                                                <span className="text-xs font-semibold text-gray-600">A</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 flex items-center">
+                                            <div className="flex items-center gap-2 text-sm text-gray-700">
+                                                <span className="w-3 h-3 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                                                <span>{message.content}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <ChatMessage message={message}/>
+                                )}
+                            </div>
                         ))}
                         <div ref={messagesEndRef}/>
                     </div>
