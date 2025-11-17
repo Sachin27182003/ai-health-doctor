@@ -26,6 +26,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-tooltip": "^1.1.7",
     "@trigger.dev/sdk": "3.3.16",
+    "@vapi-ai/web": "^2.5.1",
     "@vercel/blob": "^0.27.1",
     "bcryptjs": "^3.0.0",
     "class-variance-authority": "^0.7.1",
