@@ -14,7 +14,7 @@ async function Home() {
           <p className="text-lg">
             Get immediate answers to your health questions, anytime, anywhere.
           </p>
-          <span className="flex flex-col lg:flex-row gap-2">
+          <span className="flex flex-col  lg:flex-row gap-2">
             <Button
               asChild
               className="w-fit !bg-violet-300 !text-zinc-950 hover:!bg-violet-300/80 !rounded-full !font-bold p-5 cursor-pointer min-h-10 max-sm:w-full border-4 border-violet-500"
