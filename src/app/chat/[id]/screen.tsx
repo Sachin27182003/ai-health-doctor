@@ -249,7 +249,7 @@ export default function Screen({ isMobile }: ScreenProps) {
             <div className="border-t p-4 z-10 md:static fixed bottom-0 left-0 w-full bg-white ">
               <div className="flex gap-2">
                 <Button className="">
-                  <Link href="/assistant">Talk to doctor</Link>
+                  <Link href="/assistant">Talk to AI doctor</Link>
                 </Button>
                 <Input
                   placeholder={t("inputPlaceholder")}

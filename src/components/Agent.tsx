@@ -98,10 +98,10 @@ const Agent = ({
 
   return (
     <>
-      <div className="call-view caret-transparent">
+      <div className="call-view caret-transparent ">
         {/* AI */}
-        <div className="card-interviewer">
-          <div className="avatar">
+        <div className="card-interviewer border-4 border-violet-500 ">
+          <div className="avatar border-4 border-violet-500 ">
             <Image
               src="/ai-avatar.png"
               alt="ai"
@@ -111,18 +111,18 @@ const Agent = ({
             />
             {isSpeaking && <span className="animate-speak" />}
           </div>
-          <h3 className="text-primary-100">Virtual Assistant</h3>
+          <h3 className="text-indigo-100">Virtual Assistant</h3>
         </div>
 
         {/* User */}
         <div className="card-border">
-          <div className="card-content">
+          <div className="card-content border-4 border-violet-500 ">
             <Image
               src="/user-avatar.png"
               alt="user"
               width={120}
               height={120}
-              className="rounded-full object-cover"
+              className="rounded-full object-cover border-4 border-violet-500 "
             />
             <h3>{userName}</h3>
           </div>
@@ -131,7 +131,7 @@ const Agent = ({
 
       {/* Transcript */}
       {messages.length > 0 && (
-        <div className="transcript-border">
+        <div className="transcript-border ">
           <div className="transcript">
             <p key={lastMessage} className={cn("animate-fadeIn opacity-100")}>
               {lastMessage}
@@ -141,7 +141,7 @@ const Agent = ({
       )}
 
       {/* Call Controls */}
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center ">
         {callStatus !== CallStatus.ACTIVE ? (
           <button className="btn-call" onClick={handleCall}>
             {callStatus === "CONNECTING" ? ". . ." : "Call"}

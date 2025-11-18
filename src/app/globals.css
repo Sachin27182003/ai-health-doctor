@@ -178,7 +178,7 @@
     }
 
     .card-interviewer {
-      @apply flex items-center justify-center flex-col gap-2 p-7 h-[350px] bg-gradient-to-b from-[#171532] to-[#08090D] rounded-lg border-2 border-violet-300/50 flex-1 sm:basis-1/2 w-full;
+      @apply flex items-center justify-center flex-col gap-2 p-7 h-[350px] bg-gradient-to-b from-[#171532] to-[#08090D] rounded-3xl flex-1 sm:basis-1/2 w-full;
     }
 
     .avatar {
@@ -190,11 +190,11 @@
     }
 
     .card-border {
-      @apply bg-gradient-to-b from-[#4B4D4F] to-[#4B4D4F33] p-0.5 rounded-2xl flex-1 sm:basis-1/2 w-full h-[350px] max-md:hidden;
+      @apply bg-gradient-to-b from-[#4B4D4F] to-[#4B4D4F33] p-0.5 flex-1 sm:basis-1/2 w-full rounded-3xl h-[350px] max-md:hidden;
     }
 
     .card-content {
-      @apply flex flex-col gap-2 justify-center items-center p-7 bg-gradient-to-b from-[#1A1C20] to-[#08090D] rounded-2xl min-h-full;
+      @apply flex flex-col gap-2 justify-center items-center p-7 bg-gradient-to-b from-[#1A1C20] to-[#08090D] rounded-3xl min-h-full;
     }
   }
 

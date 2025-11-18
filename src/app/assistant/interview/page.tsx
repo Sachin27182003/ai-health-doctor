@@ -12,7 +12,8 @@ const Page = async () => {
 
   return (
     <>
-      <h3 className="caret-transparent">Your AI Health Companion</h3>
+      <h3 className="caret-transparent">
+        Your AI Health Companion</h3>
 
       <Agent
         userName="User"        // safe now
