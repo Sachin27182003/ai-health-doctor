@@ -3,6 +3,16 @@ import React from 'react';
 export function NavLinks() {
     return (
         <div className="hidden items-center gap-4 mr-4 md:flex">
+
+            <a
+                href="https://tally.so/r/gDDZl1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors font-medium"
+            >
+                Feedback
+            </a>
+            
             <a
                 href="https://www.linkedin.com/in/sachin-kumar-vishwakarma-3440a1296/"
                 target="_blank"
