@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Send, PanelLeftOpen} from "lucide-react";
+import { Send, PanelLeftOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import LogoutButton from "@/components/auth/logout-button";
@@ -139,8 +139,17 @@ export default function Screen({ isMobile }: ScreenProps) {
         done = isDone;
         const content = decoder.decode(value, { stream: !done });
         for (const data of content.split("\n").filter(Boolean)) {
-          const { content, error }: { content?: string; error?: string } =
-            JSON.parse(data);
+          let json;
+          try {
+            json = JSON.parse(data);
+          } catch (e) {
+            console.error("Non-JSON chunk:", data);
+            console.log(e);
+            continue; // ← IMPORTANT: prevent crash
+          }
+
+          const { content, error } = json;
+
           if (error) {
             console.error("Error from LLM:", error);
             continue;
