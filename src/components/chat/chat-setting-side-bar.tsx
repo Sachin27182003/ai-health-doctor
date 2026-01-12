@@ -199,7 +199,7 @@ export default function ChatSettingSideBar({
 
         if (models.length > 0) {
           // pick a safe index (prefer index 0, or 3 if available)
-          const chooseIndex = Math.min(7, models.length - 1);
+          const chooseIndex = Math.min(1, models.length - 1);
           const chosen = models[chooseIndex];
           console.log("chhosen model", chosen);
           setSelectedLLMProviderModel(chosen);
@@ -230,6 +230,7 @@ export default function ChatSettingSideBar({
   // If only one provider, select and update (but only if different)
   useEffect(() => {
     if (llmProvidersData?.llmProviders?.length === 1) {
+
       const provider = llmProvidersData.llmProviders[0];
       setSelectedLLMProvider(provider);
 

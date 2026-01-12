@@ -108,16 +108,20 @@ export async function POST(
   // ----------------------
   // Google LLM streaming
   // ----------------------
+ // ... inside the POST function ...
+
   const responseStream = new ReadableStream({
     async start(controller) {
-      let messageContent = "";
+      let fullMessageForDb = ""; // Store full text here for DB saving
 
       try {
         let llmProviderModelId = chatRoom.llmProviderModelId;
 
-        // Provide a fallback default model
+        // FIX 1: Use a valid model name
         if (!llmProviderModelId) {
-          llmProviderModelId = "gemini-2.5-pro"; // <-- change if needed
+          llmProviderModelId = "gemini-2.5-flash"; // Changing 2.5 to 1.5-flash (faster/cheaper) or 1.5-pro
+          
+          // Optional: Update DB to use this valid model
           await prisma.chatRoom.update({
             where: { id },
             data: { llmProviderModelId },
@@ -130,26 +134,34 @@ export async function POST(
         }).withConfig({ metadata: { chatRoomId: id }, runName: "chat" });
 
         const chatStream = await gemini.stream(messages);
+        
         for await (const part of chatStream) {
-          const deltaContent = part.content?.toString();
-          if (deltaContent) messageContent += deltaContent;
-          controller.enqueue(
-            `${JSON.stringify({ content: messageContent })}\n`
-          );
+          const deltaContent = part.content?.toString() || "";
+          
+          if (deltaContent) {
+            // Accumulate for the Database
+            fullMessageForDb += deltaContent;
+
+            // FIX 2: Send only the DELTA to the client
+            // The client does "messageContent += content", so we send only the new part
+            controller.enqueue(
+              `${JSON.stringify({ content: deltaContent })}\n`
+            );
+          }
         }
 
-        // Save assistant response
+        // Save assistant response to DB
         await prisma.$transaction(async (prisma) => {
           await prisma.chatMessage.create({
             data: {
-              content: messageContent,
+              content: fullMessageForDb, // Save the full message
               role: "ASSISTANT",
               chatRoomId: id,
             },
           });
           await prisma.chatRoom.update({
             where: { id },
-            data: { lastActivityAt: new Date(), name: messageContent },
+            data: { lastActivityAt: new Date(), name: fullMessageForDb.substring(0, 50) },
           });
         });
       } catch (error) {

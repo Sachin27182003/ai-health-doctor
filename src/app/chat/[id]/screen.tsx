@@ -150,10 +150,37 @@ export default function Screen({ isMobile }: ScreenProps) {
 
           const { content, error } = json;
 
+          // ---------------------------------------------------------
+          // FIX STARTS HERE
+          // ---------------------------------------------------------
           if (error) {
             console.error("Error from LLM:", error);
-            continue;
+            
+            // 1. Stop the "Thinking..." timer
+            clearInterval(stageInterval);
+
+            // 2. Create an error message to replace the placeholder
+            const errorMessage = {
+              id: placeholderId,
+              content: `Error: ${error}. Please check your model settings.`, 
+              role: "ASSISTANT" as ChatRole,
+              createdAt: new Date(),
+            };
+
+            // 3. Update the UI immediately
+            const updatedWithError = [
+              ...messages,
+              userMessage,
+              errorMessage,
+            ];
+            await mutate({ chatMessages: updatedWithError }, { revalidate: false });
+
+            // 4. Break the loop to stop listening to the stream
+            break; 
           }
+          // ---------------------------------------------------------
+          // FIX ENDS HERE
+          // ---------------------------------------------------------
           if (content) {
             // Clear the thinking stage interval when LLM starts responding
             if (messageContent === "") {
