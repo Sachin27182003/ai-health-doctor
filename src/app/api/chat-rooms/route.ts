@@ -1,4 +1,7 @@
-import prisma, {Prisma} from "@/lib/prisma";
+// 1. Import the database instance from your local lib
+import prisma from "@/lib/prisma"; 
+// 2. Import the types directly from the Prisma package
+import { Prisma } from "@prisma/client"; 
 import {NextResponse} from "next/server";
 import {auth} from "@/auth";
 

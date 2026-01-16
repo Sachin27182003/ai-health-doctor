@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
-import prisma, { Prisma } from "@/lib/prisma";
+// 1. Import the database instance from your local lib
+import prisma from "@/lib/prisma"; 
+// 2. Import the types directly from the Prisma package
+import { Prisma } from "@prisma/client"; 
 import assistantModeSeed from "../../../../../prisma/data/assistant-mode.json";
 import llmProviderSeed from "../../../../../prisma/data/llm-provider.json";
 

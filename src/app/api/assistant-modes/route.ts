@@ -1,72 +1,76 @@
-import {NextRequest, NextResponse} from "next/server";
-import prisma, {Prisma} from "@/lib/prisma";
-import {auth} from "@/auth";
+import { NextRequest, NextResponse } from "next/server";
+// 1. Import the database instance from your local lib
+import prisma from "@/lib/prisma"; 
+// 2. Import the types directly from the Prisma package
+import { Prisma } from "@prisma/client"; 
+import { auth } from "@/auth";
 
-export interface AssistantMode extends Prisma.AssistantModeGetPayload<{
-    select: { id: true, name: true, description: true, systemPrompt: true }
-}> {
-    id: string
+export interface AssistantMode
+  extends Prisma.AssistantModeGetPayload<{
+    select: { id: true; name: true; description: true; systemPrompt: true };
+  }> {
+  id: string;
 }
 
 export interface AssistantModeListResponse {
-    assistantModes: AssistantMode[]
+  assistantModes: AssistantMode[];
 }
 
 export interface AssistantModeCreateRequest {
-    name: string;
-    description: string;
-    systemPrompt: string;
-    context: string;
-    visibility: 'PUBLIC' | 'PRIVATE';
+  name: string;
+  description: string;
+  systemPrompt: string;
+  context: string;
+  visibility: "PUBLIC" | "PRIVATE";
 }
 
 export interface AssistantModeCreateResponse extends AssistantMode {
-    id: string;
+  id: string;
 }
 
 export async function GET() {
-    const session = await auth()
-    if (!session || !session.user) {
-        return NextResponse.json({message: "Unauthorized"}, {status: 401});
-    }
+  const session = await auth();
+  if (!session || !session.user) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
 
-    const assistantModes = await prisma.assistantMode.findMany({
-        where: {
-            OR: [
-                {authorId: session.user.id, visibility: 'PRIVATE'},
-                {visibility: 'PUBLIC'},
-            ],
-        },
-        orderBy: {id: 'asc'},
-    })
+  const assistantModes = await prisma.assistantMode.findMany({
+    where: {
+      OR: [
+        { authorId: session.user.id, visibility: "PRIVATE" },
+        { visibility: "PUBLIC" },
+      ],
+    },
+    orderBy: { id: "asc" },
+  });
 
-    return NextResponse.json<AssistantModeListResponse>({
-        assistantModes
-    })
+  return NextResponse.json<AssistantModeListResponse>({
+    assistantModes,
+  });
 }
 
 export async function POST(req: NextRequest) {
-    const session = await auth()
-    if (!session || !session.user) {
-        return NextResponse.json({message: "Unauthorized"}, {status: 401});
-    }
+  const session = await auth();
+  if (!session || !session.user) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
 
-    const data: AssistantModeCreateRequest = await req.json()
+  const data: AssistantModeCreateRequest = await req.json();
 
-    const assistantMode = await prisma.assistantMode.create({
-        data: {
-            name: data.name,
-            description: data.description,
-            systemPrompt: data.systemPrompt,
-            authorId: session.user.id,
-            visibility: data.visibility,
-            contexts: {
-                create: {
-                    data: data.context,
-                }
-            }
-        }
-    })
+  const assistantMode = await prisma.assistantMode.create({
+    data: {
+      name: data.name,
+      description: data.description,
+      systemPrompt: data.systemPrompt,
+      authorId: session.user.id,
+      visibility: data.visibility,
+      contexts: {
+        create: {
+          data: data.context,
+        },
+      },
+    },
+  });
 
-    return NextResponse.json<AssistantModeCreateResponse>(assistantMode)
+  return NextResponse.json<AssistantModeCreateResponse>(assistantMode);
 }
